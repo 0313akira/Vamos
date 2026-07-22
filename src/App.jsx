@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import {auth} from'./firebase'
+import {auth,db} from'./firebase'
+import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore'
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged,signOut }from 'firebase/auth'
 
-<firebase></firebase>
+
 
 function App() {
   // 新しい「状態」を作る
+
   const [text, setText] = useState("")
   const [name, setName] = useState("")
   const [email,setEmail] = useState("")
@@ -26,7 +28,7 @@ function App() {
     const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 
-    const unsubsceribePosts = onSnapshot(q,(snapshot) => {
+    const unsubscribePosts = onSnapshot(q,(snapshot) => {
       const unsubscribePosts = snapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -38,7 +40,7 @@ function App() {
       })
       setHistory(unsubscribePosts)
     })
-    return() =>unsubsceribePosts()
+    return() =>unsubscribePosts()
   },[])
 
 
@@ -125,9 +127,10 @@ function App() {
         name:user?.displayName || "ナナシさん",
         time:new Date()
       })
-    }
+    
 
     const now = new Date()
+
     const timeString = now.toLocaleString()
 
     setHistory([{text: text, time: timeString }, ...history])//現在の文字を配列に追加する
@@ -135,7 +138,9 @@ function App() {
     setName("")//名前欄を空にする
     setCurrentView("home") // 保存した文章
 
-  }
+  }catch(error){
+    setErrorMessage("投稿に失敗しました:" + error.code)
+  }}
   
 
   const handleDeleteItem = (indexToDelete) =>{
@@ -153,10 +158,17 @@ function App() {
     localStorage.removeItem('mySavedList')//ローカルストレージのメモ帳もっ完全にけす
     
   }
+
+  const filteredHistory = history.filter((item) => {
+    // 投稿本文(item.text)に検索文字(searchTag)が含まれているかチェック
+    return item.text.includes(searchTag)
+  })
+
   // 💡 return の外側（関数の最初の方）で定義する
   const myTitleStyle = {
   textAlign: 'left'
   };
+
 
   return (
     
@@ -215,7 +227,22 @@ function App() {
     {currentView === "search" && (
       <div style={myTitleStyle}>
         <h1>検索画面</h1>
-        <p>（ここは検索画面です。まだ作っていません。）</p>
+    {/* 🔍 ここに入力欄（input）を追加します */}
+    <input 
+      type="text" 
+      value={searchTag} 
+      onChange={(e) => setSearchTag(e.target.value)} 
+      placeholder="タグやキーワードで検索" 
+    />
+
+    {filteredHistory.map((item,index) =>(
+      <p key = {index} style = {{marginBottom: "13px" }}>
+        {item.name ? `${item.name}:`:""}
+        {item.text}
+        <br/>
+        <span>{item.time}</span>
+      </p>
+    ))}
       </div>
     )}
     {currentView === "home" && (

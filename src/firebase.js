@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
-// ※ もし他にも analytics などをインポートしていればここに残してください
+// 🔑 Firebaseの「認証(Auth)」と「データベース(Firestore)」の機能を読み込む
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,4 +15,11 @@ const firebaseConfig = {
 
 // アプリの初期化
 const app = initializeApp(firebaseConfig);
+
+// 🛠️ 認証機能(auth)とデータベース機能(db)を有効にする
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🚀 App.jsx など、他のファイルでも使えるようにエクスポートする
+export { auth, db };
 export default app;
