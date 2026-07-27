@@ -199,7 +199,7 @@ function App() {
       <p>{errorMessage}</p>
       <input type = "text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder ="メールアドレス"/>
       <p></p>
-      <input type = "text" value={password} onChange={(e) => setPassword(e.target.value)} placeholder ="パスワード"/>
+      <input type = "password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder ="パスワード"/>
       <p></p>
       <button onClick={handleLogin}>ログイン</button>
       <p></p>
@@ -218,7 +218,7 @@ function App() {
         <p></p>
          <input type = "text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder ="メールアドレス"/>
         <p></p>
-        <input type = "text" value={password} onChange={(e) => setPassword(e.target.value)} placeholder ="パスワード"/>
+        <input type = "password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder ="パスワード"/>
         <button onClick={handleSignup}>登録</button>
         
       </div>
